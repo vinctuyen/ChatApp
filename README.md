@@ -1,4 +1,4 @@
-# my-project
+# ChatApp
 
 ## Project setup
 ```
