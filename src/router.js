@@ -10,7 +10,7 @@ export default new Router({
     // Full Layout
     // ======================
 			path: '',
-            component: () => import('./layout/full/MainContainer.vue'),
+            component: () => import('./layout/full/ChatScreen.vue'),
             // ======================
             // Theme routes / pages
             // ======================
