@@ -140,7 +140,12 @@ export default new Router({
                     name: 'Textarea',
                     index: 29,
                     component: () => import('./views/components/vuesax/textarea/textarea.vue')
-                }
+                },{
+                    path: '/login',
+                    name: 'login',
+                    index: 30,
+                    component: () => import('./views/Login.vue')
+                },
 
             ]
 		},
