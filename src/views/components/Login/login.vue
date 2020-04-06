@@ -1,13 +1,18 @@
 <template lang="html">
   <div id="login">
-    <div>
-      <img src="" alt=""> ddaay laf ahn
+    <div class="">
+      <img src="login.png" alt="">
     </div>
-    <div>
-      <h1>Login</h1>
-      <input type="text" name="username" v-model="input.username" placeholder="Username" />
-      <input type="password" name="password" v-model="input.password" placeholder="Password" />
-      <button type="button" v-on:click="login()">Login</button>
+    <div >
+      <div>
+        <h1>Login</h1>
+        <p>Welcome back, please login to your account.</p>
+      </div>
+      <div>
+        <input type="text" name="username" v-model="input.username" placeholder="Username" />
+        <input type="password" name="password" v-model="input.password" placeholder="Password" />
+        <button type="button" v-on:click="login()" class="vs-component vs-button vs-button-primary vs-button-filled">Login</button>
+      </div>
     </div>
 
   </div>
@@ -30,22 +35,13 @@ export default {
   },
   methods: {
     login() {
-      if(this.input.username != "" && this.input.password != "") {
-        if(this.input.username == this.$parent.mockAccount.username && this.input.password == this.$parent.mockAccount.password) {
-          this.$emit("authenticated", true);
-          this.$router.replace({ name: "secure" });
-        } else {
-          // console.log("The username and / or password is incorrect");
-        }
-      } else {
-        // console.log("A username and password must be present");
-      }
+
     }
   }
 
 };
 </script>
-<style>
+<style scoped="">
   #login {
     width: 500px;
     border: 1px solid #CCCCCC;
@@ -55,7 +51,6 @@ export default {
     padding: 20px;
     display: flex;
     justify-content: space-around;
-    flex-wrap: wrap;
   }
 
 </style>
