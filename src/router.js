@@ -1,9 +1,7 @@
-/* eslint-disable no-console */
 import Vue from "vue";
 import Router from "vue-router";
-import store from './store/store.js'
+import store from './store/store'
 
-let currentUser =  store.state.isAuth
 Vue.use(Router);
 let router = new Router({
   routes: [
@@ -28,16 +26,12 @@ let router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
+  let currentUser = store.state.userId;
   let requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-
   if (requiresAuth && !currentUser) {
     next("login");
-    // eslint-disable-next-line no-console
-    console.log("ok done");
   } else if (!requiresAuth && currentUser) {
     next("chat");
-    // eslint-disable-next-line no-console
-    console.log("chua login 1");
   } else {
     next();
   }
