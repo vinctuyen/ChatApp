@@ -18,7 +18,9 @@
   </div>
 </template>
 <script>
-
+import signIn from '@/firebase/api.js'
+signIn('tuyen.no1.tb@gmail.com', 'Mmc181199@')
+import { mapMutations } from 'vuex'
 export default {
   name: "Login",
   messages: {
@@ -36,9 +38,11 @@ export default {
   methods: {
     login() {
 
-    }
+    },
+    ...mapMutations([
+      'auth',
+    ])
   }
-
 };
 </script>
 <style scoped="">
