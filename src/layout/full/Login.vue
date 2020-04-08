@@ -1,5 +1,5 @@
 <template>
-  <div class="main-wrapper">
+  <div class="main-wrapper" style="height: 100%" >
     <Login />
   </div>
 </template>
@@ -9,7 +9,7 @@ import Login from "@/views/components/Login/login.vue";
 import messages from '@/views/components/chat/messages.js';
 
 export default {
-  name: "ChatScreen",
+  name: "LoginScreen",
   components: {
     Login,
   },

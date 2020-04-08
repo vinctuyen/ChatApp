@@ -1,5 +1,5 @@
 <template>
-  <div class="main-wrapper">
+  <div class="main-wrapper" style="height: 100%">
     <Chat parent="#parentx" :messages="messages"/>
   </div>
 </template>
