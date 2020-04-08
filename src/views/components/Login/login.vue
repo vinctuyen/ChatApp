@@ -134,7 +134,7 @@ export default {
 }
 .form-login {
   width: 50%;
-  padding: 60px 38px 0 32px;
+  padding: 60px 38px 60px 32px;
   background: #fff;
 }
 .title {
