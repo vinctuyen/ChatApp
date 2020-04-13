@@ -1,6 +1,6 @@
 <template>
   <div class="main-wrapper" style="height: 100%">
-    <Chat parent="#parentx" :messages="messages"/>
+    <Chat />
   </div>
 </template>
 
