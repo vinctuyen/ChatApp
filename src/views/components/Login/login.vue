@@ -44,7 +44,11 @@
             </div>
           </div>
           <div class="btn">
-            <vs-button color="primary" type="border" style="width: 120px"
+            <vs-button
+              color="primary"
+              type="border"
+              style="width: 120px"
+              @click="Register()"
               >Đăng kí</vs-button
             >
             <vs-button
@@ -81,7 +85,7 @@ export default {
     ...mapGetters(["userId"]),
   },
   methods: {
-    ...mapActions({ updateUser: "updateUser" }),
+    ...mapActions({ UpdateUser: "UpdateUser", RegisterUser: "RegisterUser" }),
     Login() {
       if (!this.email) {
         alert("Vui lòng nhập email");
@@ -89,17 +93,26 @@ export default {
         if (!this.password) {
           alert("Vui lòng nhập mật khẩu");
         } else {
-          this.updateUser({
+          this.UpdateUser({
             email: this.email,
             password: this.password,
-            router: this.$router
+            router: this.$router,
           });
-          // eslint-disable-next-line no-undef
-          // console.log('this.userId',this.userId)
-          //  if(this.userId) {
-          //   this.$router.push({ name: "Chat" });
-          // }
-          // 
+        }
+      }
+    },
+    Register() {
+      if (!this.email) {
+        alert("Vui lòng nhập email");
+      } else {
+        if (!this.password) {
+          alert("Vui lòng nhập mật khẩu");
+        } else {
+          this.RegisterUser({
+            email: this.email,
+            password: this.password,
+            router: this.$router,
+          });
         }
       }
     },
@@ -115,6 +128,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-image: url('~@/assets/images/background/vuexy-login-bg.jpg')
 }
 .login-page {
   display: flex;

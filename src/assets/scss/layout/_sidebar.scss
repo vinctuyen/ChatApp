@@ -4,12 +4,14 @@
 		min-height: calc(100vh - 60px);
 		position: fixed;
 		padding-bottom: 60px;
-		z-index: 15000;
+		z-index: 150000;
+	}
+	.vs-sidebar--background {
+		background: none !important;
+		width: 0;
+		height: 0;
 	}
 
-	.vs-sidebar--background {
-		z-index: 14000;
-	}
 }
 
 .main-wrapper-full {
