@@ -4,7 +4,7 @@
       <p>{{ item.content }}</p>
     </div> -->
     <div class="chat-text">
-      <p>{{ message.content }}</p>
+      <p>{{ content }}</p>
     </div>
     <span style="padding:0 30px">
       <vs-avatar v-if="messages[id-1] && messages[id].from != messages[id-1].from || id == 0"
@@ -21,13 +21,15 @@ export default {
   data: () => ({
     // messages: [{ message: "I will it for sure" }],
   }),
-  props: ['message', "messages", "id"],
+  props: ['content', "messages", "id"],
 };
 </script>
 <style lang="stylus" scoped="">
 .chat-talk {
   display: flex;
   justify-content: flex-start;
+  padding: 10px 0;
+
 }
 .chat-text {
   p {
