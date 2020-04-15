@@ -80,8 +80,7 @@ export default new Vuex.Store({
       commit("setCurrentRoom", roomId)
     },
     sendMessage({commit}, request){
-      console.log('cccc', request.sender, request.message, request.roomID, request.idMessage)
-      api.sendMessage(request.sender, request.message, request.roomID, request.idMessage)
+      api.sendMessage({commit}, request.sender, request.message, request.roomID, request.idMessage)
     }
   },
   getters: {
