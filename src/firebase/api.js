@@ -24,6 +24,7 @@ let time =
 data.child("room").on(
   "value",
   function(snapshot) {
+    console.log(snapshot.val())
     listRoom = snapshot.val();
   },
   function(errorObject) {
@@ -31,11 +32,11 @@ data.child("room").on(
   }
 );
 
-console.log("listRoom", listRoom);
 data.child("account").on(
   "value",
   function(snapshot) {
     listAccount = snapshot.val();
+    console.log("listRoom", listRoom);
   },
   function(errorObject) {
     console.log("The read failed: " + errorObject.code);
@@ -54,9 +55,7 @@ function checkAccount(email) {
 }
 
 function checkRoom(nameRoom) {
-  console.log(nameRoom);
   for (let i in listRoom) {
-    console.log(listRoom[i].name);
     if (listRoom[i].name == nameRoom) {
       return false;
     }
@@ -154,9 +153,8 @@ export default {
                   }
                 );
             })
-            .catch(function(error) {
+            .catch(function() {
               // An error happened.
-              console.log(error);
             });
         })
         .catch((e) => {
@@ -182,9 +180,6 @@ export default {
       });
   },
   addRoom(idRoom, members, message) {
-    let date = new Date();
-    console.log(moment(date));
-
     if (
       checkRoom(members[0] + members[1]) == false ||
       checkRoom(members[1] + members[0]) == false
@@ -260,7 +255,7 @@ export default {
   getContentConversation({ commit }, roomID) {
     commit("getConversation", conversation(roomID));
   },
-  sendMessage(sender, message, roomID, idMessage) {
+  sendMessage({commit},sender, message, roomID, idMessage) {
     firebase
       .database()
       .ref("room")

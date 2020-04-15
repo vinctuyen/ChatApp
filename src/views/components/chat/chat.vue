@@ -186,7 +186,6 @@ export default {
     },
     getChat(roomId) {
       // eslint-disable-next-line no-console
-      console.log(roomId)
       this.getConversation(roomId)
     },
     getListRoom() {
@@ -196,7 +195,6 @@ export default {
       // eslint-disable-next-line no-console
       this.search({ email: this.emailSearch });
       // eslint-disable-next-line no-console
-      console.log(this.nameSearch);
     }
   },beforeMount(){
     this.getListRoom()
