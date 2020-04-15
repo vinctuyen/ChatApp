@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuesax from 'vuesax'
 import firebase from './firebase/firebase'
 
-
 import App from './App.vue'
 
 import 'vuesax/dist/vuesax.css' //Vuesax styles

@@ -12,6 +12,13 @@ export default new Vuex.Store({
     themeColor: "#2962ff",
     isAuth: false,
     userId: null,
+    searchUid: null,
+    searchName: '',
+    searchUser: {},
+    room: {},
+    contacts: {},
+    conversation: {},
+    currentRoom: '',
   },
   mutations: {
     //This is for Sidbar trigger in mobile
@@ -20,7 +27,6 @@ export default new Vuex.Store({
     },
 
     auth(state, userId) {
-      console.log("da update state");
       state.isAuth = true;
       state.userId = userId;
     },
@@ -28,6 +34,24 @@ export default new Vuex.Store({
       state.isAuth = false;
       state.userId = null;
     },
+    addsearchUser(state, user) {
+      state.searchUser = user;
+    },
+    removesearchUser(state) {
+      state.searchUser = null;
+    },
+    getRoom(state, room) {
+      state.room = room
+    },
+    getContacts(state, contacts) {
+      state.contacts = contacts
+    },
+    getConversation(state, conversation) {
+      state.conversation = conversation
+    },
+    setCurrentRoom(state, currentRoom) {
+      state.currentRoom = currentRoom
+    }
   },
   actions: {
     UpdateUser({ commit }, user) {
@@ -40,7 +64,24 @@ export default new Vuex.Store({
       api.signOut({ commit }, user.router);
     },
     createRoom({ commit }, a) {
-      api.addRoom(a.idRoom, a.nameRoom, a.members, a.message)
+      api.addRoom(a.idRoom, a.members, a.message)
+    },
+    search({ commit }, email) {
+      api.search({commit},email.email)
+    },
+    getRoom({ commit }) {
+      api.getRoom({commit})
+    },
+    getContacts({commit}, userId) {
+      api.getListContact({commit}, userId)
+    },
+    getConversation({commit}, roomId) {
+      api.getContentConversation({commit}, roomId)
+      commit("setCurrentRoom", roomId)
+    },
+    sendMessage({commit}, request){
+      console.log('cccc', request.sender, request.message, request.roomID, request.idMessage)
+      api.sendMessage(request.sender, request.message, request.roomID, request.idMessage)
     }
   },
   getters: {
@@ -48,6 +89,11 @@ export default new Vuex.Store({
     getUserId(state) {
       return (matchNumber) => {
         return state.userId === matchNumber;
+      };
+    },
+    getSearchUser(state) {
+      return (matchNumber) => {
+        return state.searchUser === matchNumber;
       };
     },
   },

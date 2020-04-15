@@ -25,12 +25,60 @@
             <vs-icon icon="notifications" size="30px" color="#DD3434"></vs-icon>
           </span>
           <span>
-            <vs-icon icon="person_add" size="30px" color="#DD3434"></vs-icon>
+            <vs-icon
+              icon="person_add"
+              size="30px"
+              color="#DD3434"
+              @click="popupActivo2 = true"
+            ></vs-icon>
           </span>
           <vs-avatar
             src="https://avatars2.githubusercontent.com/u/31676496?s=460&v=4"
           />
         </div>
+        <vs-popup
+          classContent="popup-search-user"
+          title="Thêm kết nối"
+          :active.sync="popupActivo2"
+        >
+          <vs-input
+            class="inputx"
+            placeholder="Nhập email"
+            v-model="emailSearch"
+            style="width: 100%; padding-bottom: 20px"
+          />
+          <div style="display: flex;justify-content: center;">
+            <vs-button
+              @click="
+                popupActivo3 = true;
+                popupActivo2 = false;
+                Search();
+              "
+              color="primary"
+              type="filled"
+              >Tìm kiếm</vs-button
+            >
+          </div>
+          <vs-popup title="Kết quả tìm kiếm" :active.sync="popupActivo3">
+            <div class="searchUser">
+              <vs-avatar v-bind:src="searchUser.anh" />
+              <span>
+                {{ searchUser.name }}
+              </span>
+            </div>
+            <div style="display: flex;justify-content: center;">
+              <vs-button
+                @click="
+                  popupActivo3 = false;
+                  InitRoom()
+                "
+                color="primary"
+                type="filled"
+                >Thêm kết nối</vs-button
+              >
+            </div>
+          </vs-popup>
+        </vs-popup>
       </div>
     </div>
     <vs-sidebar
@@ -41,58 +89,14 @@
       spacer
       v-model="active"
     >
-      <div class="chat">
-        <div class="chat-avatar">
-          <vs-avatar
-            src="https://avatars2.githubusercontent.com/u/31676496?s=460&v=4"
-          />
-        </div>
-        <div class="chat-content">
-          <div class="name-chater">hennry</div>
-          <div class="first-meassage">How can I purchase it?</div>
-        </div>
-        <div class="last-time">11:34 am</div>
-      </div>
-
-      <div class="chat">
-        <div class="chat-avatar">
-          <vs-avatar
-            src="https://avatars2.githubusercontent.com/u/31676496?s=460&v=4"
-          />
-        </div>
-        <div class="chat-content">
-          <div class="name-chater">Alin Kystal</div>
-          <div class="first-meassage">Apple pie bonbon cheesecake</div>
-        </div>
-        <div class="last-time">11:34 am</div>
-      </div>
-
-      <div class="chat">
-        <div class="chat-avatar">
-          <vs-avatar
-            src="https://avatars2.githubusercontent.com/u/31676496?s=460&v=4"
-          />
-        </div>
-        <div class="chat-content">
-          <div class="name-chater">Lawrence Collins</div>
-          <div class="first-meassage">Looks clean and fresh UI.</div>
-        </div>
-        <div class="last-time">11:34 am</div>
-      </div>
-
-      <div class="chat">
-        <div class="chat-avatar">
-          <vs-avatar
-            src="https://avatars2.githubusercontent.com/u/31676496?s=460&v=4"
-          />
-        </div>
-        <div class="chat-content">
-          <div class="name-chater">Alice Hawker</div>
-          <div class="first-meassage">I will purchase it for sure</div>
-        </div>
-        <div class="last-time">11:34 am</div>
-      </div>
-
+      <button v-for="item in contacts" :key="item.key" class="listContact" @click="getChat(item.roomID)">
+        <ListChat
+          v-bind:name="item.contactName"
+          :firstMessage="item.firstMessage"
+          :time="item.time"
+          :avatar="item.contactAvatar"
+        />
+      </button>
       <!-- <div class="footer-sidebar" slot="footer">
         <vs-button icon="reply" color="danger" type="flat">log out</vs-button>
         <vs-button icon="settings" color="primary" type="border"></vs-button>
@@ -100,19 +104,19 @@
     </vs-sidebar>
     <div class="chat-conversation">
       <div style="height: calc(750px);overflow-y: scroll;" id="chat">
-        <div class="chat-box" v-for="(item, index) in messages" :key="item.key">
+        <div class="chat-box" v-for="(item, index) in conversation.messages" :key="item.key">
           <Message
-            v-bind:message="item"
-            :messages="messages"
+            v-bind:content="item.content"
+            :messages="conversation.messages"
             :id="index"
-            v-if="item.from != 1"
+            v-if="item.from != userId"
           />
           <MessageRight
             style="display: flex"
-            v-bind:message="item"
-            :messages="messages"
+            v-bind:content="item.content"
+            :messages="conversation.messages"
             :id="index"
-            v-if="item.from == 1"
+            v-if="item.from == userId"
           />
         </div>
       </div>
@@ -129,7 +133,7 @@
           color="primary"
           type="filled"
           style="width: 120px; left: 50px;"
-          @click="InitRoom()"
+          @click="sendMessageRequest()"
           >Send</vs-button
         >
       </div>
@@ -138,164 +142,84 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import MessageRight from "./message-right";
 import Message from "./message";
-
+import ListChat from "./list-chat";
 export default {
   components: {
     MessageRight,
     Message,
+    ListChat
   },
   data: () => ({
+    value1: "",
+    textarea: "",
+    popupActivo2: false,
+    popupActivo3: false,
+    nameSearch: "",
+    emailSearch: "",
     active: false,
     activeItem: 0,
-    search: "",
-    messages: {
-      0: {
-        content: "hello",
-        from: 1,
-      },
-      1: {
-        content: "baby",
-        from: 1,
-      },
-      2: {
-        content: "hi, my love",
-        from: 2,
-      },
-      3: {
-        content: "hi, my love",
-        from: 2,
-      },
-      4: {
-        content: "how are you ?",
-        from: 1,
-      },
-      5: {
-        content: "find, and you?",
-        from: 2,
-      },
-      6: {
-        content: "hello",
-        from: 1,
-      },
-      7: {
-        content: "baby",
-        from: 1,
-      },
-      8: {
-        content: "hi, my love",
-        from: 2,
-      },
-      9: {
-        content: "hi, my love",
-        from: 2,
-      },
-      10: {
-        content: "how are you ?",
-        from: 1,
-      },
-      11: {
-        content: "find, and you?",
-        from: 2,
-      },
-      12: {
-        content: "find, and you?",
-        from: 2,
-      },
-      13: {
-        content: "hello",
-        from: 1,
-      },
-      14: {
-        content: "baby",
-        from: 1,
-      },
-      15: {
-        content: "hi, my love",
-        from: 2,
-      },
-      16: {
-        content: "hi, my love",
-        from: 1,
-      },
-      17: {
-        content: "how are you ?",
-        from: 1,
-      },
-      18: {
-        content: "find, and you?",
-        from: 2,
-      },
-      19: {
-        content: "hi, my love",
-        from: 2,
-      },
-      20: {
-        content: "hi, my love",
-        from: 2,
-      },
-      21: {
-        content: "how are you ?",
-        from: 1,
-      },
-      22: {
-        content: "find, and you?",
-        from: 2,
-      },
-    },
-    account: {
-      0: {
-        anh: "",
-        email: "",
-        name: "Hennry",
-        room: {
-          0: 1,
-        },
-      },
-      1: {
-        anh: "",
-        email: "",
-        name: "Alin Kystal",
-        room: {
-          0: 1,
-        },
-      },
-      2: {
-        anh: "",
-        email: "",
-        name: "Lawrence ",
-        room: {
-          0: 1,
-        },
-      },
-      3: {
-        anh: "",
-        email: "",
-        name: "Alice Hawker",
-        room: {
-          0: 1,
-        },
-      },
-    },
+  }),
+  computed: mapState({
+    searchUser: state => state.searchUser,
+    userId: state => state.userId,
+    room: state => state.room,
+    contacts: state => state.contacts,
+    conversation: state => state.conversation,
+    currentRoom: state => state.currentRoom
   }),
   methods: {
-    ...mapActions({ createRoom: "createRoom" }),
+    ...mapActions({ createRoom: "createRoom", search: "search" , getRoom: 'getRoom', getContacts: "getContacts", getConversation: "getConversation", sendMessage: "sendMessage"}),
     InitRoom() {
       this.createRoom({
-        idRoom: 1,
-        nameRoom: "abc",
-        members: [1, 2],
-        message: "heeelooo",
+        idRoom: this.room.length+1,
+        nameRoom: this.searchUser.uid,
+        members: [this.userId, this.searchUser.uid],
+        message: ""
       });
     },
-  },
+    sendMessageRequest() {
+      // eslint-disable-next-line no-console
+      this.sendMessage({sender: this.userId, message: this.textarea, roomID: this.currentRoom, idMessage: this.conversation.messages.length})
+    },
+    getChat(roomId) {
+      // eslint-disable-next-line no-console
+      console.log(roomId)
+      this.getConversation(roomId)
+    },
+    getListRoom() {
+      this.getRoom()
+    },
+    Search() {
+      // eslint-disable-next-line no-console
+      this.search({ email: this.emailSearch });
+      // eslint-disable-next-line no-console
+      console.log(this.nameSearch);
+    }
+  },beforeMount(){
+    this.getListRoom()
+    this.getContacts(this.userId)
+ },
+  mounted: function() {
+    if (document.getElementById("chat")) {
+      document.getElementById("chat").scrollTop = 999999999999;
+    }
+  }
 };
-
 </script>
 
 <style lang="stylus" scoped="">
+.listContact {
+  min-height: 67px;
+  display: flex;
+  border: none;
+  padding: 0;
+  max-width: 260px;
+  align-items: center;
+  background: #fff;
+}
 .header {
   display: flex;
   align-items: center;
@@ -304,68 +228,68 @@ export default {
 }
 .list-icon{
   display: flex;
-    justify-content: space-around;
-    width: 10%;
-    align-items: center;
-    padding-right: 20px;
+  justify-content: space-around;
+  width: 10%;
+  align-items: center;
+  padding-right: 20px;
 }
 .chat {
   min-height: 67px;
   display: flex;
 }
 .chat-avatar {
-    display: flex;
-    align-items: center;
-    padding-left: 15px;
-    padding-right: 15px;
-        width: 28%;
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+  padding-right: 15px;
+  width: 28%;
 }
 .chat-content {
-      display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-around;
-        width: 45%;
-        padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-around;
+  width: 45%;
+  padding: 20px 0;
 }
 .name-chater {
-   width: 100px;
-      font-weight: 700;
-    font-size: initial;
-    color: #454655;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  width: 100px;
+  font-weight: 700;
+  font-size: initial;
+  color: #454655;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .first-meassage {
-      width: 120px;
+  width: 120px;
   font-size: .85rem;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    color: #616161;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #616161;
 }
 .last-time {
   padding: 27px 14px;
-    font-size: 10px;
+  font-size: 10px;
 }
 .chat-conversation {
   min-width: calc(100% - 260px);
-    float: right;
-    // background url("../../../assets/images/background/chat-background.jpg")
-    // background #fff
-    height: 100%;
+  float: right;
+  // background url("../../../assets/images/background/chat-background.jpg")
+  // background #fff
+  height: 100%;
 }
 .input-message {
-    display: flex;
-    align-items: center;
-    position: fixed;
-    bottom: 0;
-    left: 261px;
-    min-width: calc(100% - 260px);
-    z-index: 100000;
-    height: 120px;
-    background: #fff;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 261px;
+  min-width: calc(100% - 260px);
+  z-index: 1000;
+  height: 120px;
+  background: #fff;
 }
 .input-text {
   background #F0F5F9
@@ -379,22 +303,13 @@ export default {
   justify-content: flex-start;
   flex-direction: column
 }
-// .chat-talk {
-//   display: flex;
-//   justify-content: flex-start;
-//   padding: 20px 0;
-// }
-// .chat-text {
-//   p {
-//     max-width: 600px;
-//     padding: .5rem 1rem;
-//     color: #757575;
-//     border-radius: 5px;
-//     background-color: #fff;
-//     box-shadow: 1px 1px 10px 0 rgba(0,0,0,.14);
-//   }
-
-// }
+.searchUser {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 20px;
+}
 .parentx-static
   // overflow hidden
   // height 500px

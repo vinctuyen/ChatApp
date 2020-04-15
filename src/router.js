@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-// import store from './store/store'
+import store from './store/store'
 
 Vue.use(Router);
 let router = new Router({
@@ -25,16 +25,15 @@ let router = new Router({
   ],
 });
 
-// router.beforeEach((to, from, next) => {
-//   let currentUser = store.state.userId;
-//   let requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-//   if (requiresAuth && !currentUser) {
-//     next("login");
-//   } else if (!requiresAuth && currentUser) {
-//     next("chat");
-//   } else {
-//     next();
-//   }
-// });
-
+router.beforeEach((to, from, next) => {
+  let currentUser = store.state.userId;
+  let requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  if (requiresAuth && !currentUser) {
+    next("login");
+  } else if (!requiresAuth && currentUser) {
+    next("chat");
+  } else {
+    next();
+  }
+});
 export default router;

@@ -16,7 +16,7 @@
         <p>{{ item.content }}</p>
       </div> -->
       <div class="chat-text">
-        <p>{{ message.content }}</p>
+        <p>{{ content }}</p>
       </div>
     </div>
   </div>
@@ -28,13 +28,14 @@ export default {
   data: () => ({
     // messages: [{ message: "helo" }],
   }),
-  props: ["message", "messages", "id"],
+  props: ["content", "messages", "id"],
 };
 </script>
 <style lang="stylus" scoped="">
 .chat-talk {
   display: flex;
   justify-content: flex-start;
+  padding: 10px 0;
 }
 .chat-text {
   p {
