@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 import Vue from "vue";
 import Vuex from "vuex";
-import api from "@/firebase/api.js";
+import api from "../api/index"
 Vue.use(Vuex);
 
 /* eslint-disable */
@@ -54,34 +54,38 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    // authen
     UpdateUser({ commit }, user) {
-      api.signIn({ commit }, user.email, user.password, user.router);
+      api.authen.signIn({ commit }, user.email, user.password, user.router);
     },
     RegisterUser({ commit }, user) {
-      api.registerUser({ commit }, user.email, user.password, user.router);
+      api.authen.registerUser({ commit }, user.email, user.password, user.router);
     },
     SignOut({ commit }, user) {
-      api.signOut({ commit }, user.router);
-    },
-    createRoom({ commit }, a) {
-      api.addRoom(a.idRoom, a.members, a.message)
+      api.authen.signOut({ commit }, user.router);
     },
     search({ commit }, email) {
-      api.search({commit},email.email)
+      api.authen.search({commit},email.email)
+    },
+    // room
+    createRoom({ commit }, a) {
+      api.room.addRoom({ commit }, a.idRoom, a.members, a.message)
     },
     getRoom({ commit }) {
-      api.getRoom({commit})
+      api.room.getRoom({commit})
     },
     getContacts({commit}, userId) {
-      api.getListContact({commit}, userId)
+      api.room.getListContact({commit}, userId)
+    },
+    
+    // conversation
+    sendMessage({commit}, request){
+      api.conversation.sendMessage({commit}, request.sender, request.message, request.roomID, request.idMessage)
     },
     getConversation({commit}, roomId) {
-      api.getContentConversation({commit}, roomId)
+      api.conversation.getContentConversation({commit}, roomId)
       commit("setCurrentRoom", roomId)
     },
-    sendMessage({commit}, request){
-      api.sendMessage({commit}, request.sender, request.message, request.roomID, request.idMessage)
-    }
   },
   getters: {
     userId: (state) => state.userId,

@@ -21,17 +21,23 @@
           />
         </div>
         <div class="list-icon">
-          <span>
+          <button
+            style="border: none;
+    background: none;"
+          >
             <vs-icon icon="notifications" size="30px" color="#DD3434"></vs-icon>
-          </span>
-          <span>
+          </button>
+          <button
+            style="border: none;
+    background: none;"
+          >
             <vs-icon
               icon="person_add"
               size="30px"
               color="#DD3434"
               @click="popupActivo2 = true"
             ></vs-icon>
-          </span>
+          </button>
           <vs-avatar
             src="https://avatars2.githubusercontent.com/u/31676496?s=460&v=4"
           />
@@ -66,11 +72,15 @@
                 {{ searchUser.name }}
               </span>
             </div>
+            <div class="addFriend">
+              <p>Gửi đến bạn bè lời chào hỏi</p>
+              <vs-input class="inputx" placeholder="" v-model="firstChat"/>
+            </div>
             <div style="display: flex;justify-content: center;">
               <vs-button
                 @click="
                   popupActivo3 = false;
-                  InitRoom()
+                  InitRoom();
                 "
                 color="primary"
                 type="filled"
@@ -89,7 +99,12 @@
       spacer
       v-model="active"
     >
-      <button v-for="item in contacts" :key="item.key" class="listContact" @click="getChat(item.roomID)">
+      <button
+        v-for="item in contacts"
+        :key="item.key"
+        class="listContact"
+        @click="getChat(item.roomID)"
+      >
         <ListChat
           v-bind:name="item.contactName"
           :firstMessage="item.firstMessage"
@@ -104,7 +119,11 @@
     </vs-sidebar>
     <div class="chat-conversation">
       <div style="height: calc(750px);overflow-y: scroll;" id="chat">
-        <div class="chat-box" v-for="(item, index) in conversation.messages" :key="item.key">
+        <div
+          class="chat-box"
+          v-for="(item, index) in conversation.messages"
+          :key="item.key"
+        >
           <Message
             v-bind:content="item.content"
             :messages="conversation.messages"
@@ -150,7 +169,7 @@ export default {
   components: {
     MessageRight,
     Message,
-    ListChat
+    ListChat,
   },
   data: () => ({
     value1: "",
@@ -161,50 +180,64 @@ export default {
     emailSearch: "",
     active: false,
     activeItem: 0,
+    firstChat: ''
   }),
   computed: mapState({
-    searchUser: state => state.searchUser,
-    userId: state => state.userId,
-    room: state => state.room,
-    contacts: state => state.contacts,
-    conversation: state => state.conversation,
-    currentRoom: state => state.currentRoom
+    searchUser: (state) => state.searchUser,
+    userId: (state) => state.userId,
+    room: (state) => state.room,
+    contacts: (state) => state.contacts,
+    conversation: (state) => state.conversation,
+    currentRoom: (state) => state.currentRoom,
   }),
   methods: {
-    ...mapActions({ createRoom: "createRoom", search: "search" , getRoom: 'getRoom', getContacts: "getContacts", getConversation: "getConversation", sendMessage: "sendMessage"}),
+    ...mapActions({
+      createRoom: "createRoom",
+      search: "search",
+      getRoom: "getRoom",
+      getContacts: "getContacts",
+      getConversation: "getConversation",
+      sendMessage: "sendMessage",
+    }),
     InitRoom() {
       this.createRoom({
-        idRoom: this.room.length+1,
+        idRoom: this.room.length + 1,
         nameRoom: this.searchUser.uid,
         members: [this.userId, this.searchUser.uid],
-        message: ""
+        message: this.firstChat,
       });
     },
     sendMessageRequest() {
       // eslint-disable-next-line no-console
-      this.sendMessage({sender: this.userId, message: this.textarea, roomID: this.currentRoom, idMessage: this.conversation.messages.length})
+      this.sendMessage({
+        sender: this.userId,
+        message: this.textarea,
+        roomID: this.currentRoom,
+        idMessage: this.conversation.messages.length,
+      });
     },
     getChat(roomId) {
       // eslint-disable-next-line no-console
-      this.getConversation(roomId)
+      this.getConversation(roomId);
     },
     getListRoom() {
-      this.getRoom()
+      this.getRoom();
     },
     Search() {
       // eslint-disable-next-line no-console
       this.search({ email: this.emailSearch });
       // eslint-disable-next-line no-console
-    }
-  },beforeMount(){
-    this.getListRoom()
-    this.getContacts(this.userId)
- },
+    },
+  },
+  beforeMount() {
+    this.getListRoom();
+    this.getContacts(this.userId);
+  },
   mounted: function() {
     if (document.getElementById("chat")) {
       document.getElementById("chat").scrollTop = 999999999999;
     }
-  }
+  },
 };
 </script>
 
@@ -217,6 +250,13 @@ export default {
   max-width: 260px;
   align-items: center;
   background: #fff;
+}
+.addFriend {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 20px;
 }
 .header {
   display: flex;
