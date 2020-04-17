@@ -30,9 +30,7 @@ export default {
   align-items: center;
   background: #fff;
 }
-button:hover {
-  background: #EEFBFF;
-} 
+
 .chat-avatar {
   display: flex;
   align-items: center;

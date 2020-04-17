@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Vuesax from 'vuesax'
 import firebase from './firebase/firebase'
+import api from "./api/index"
+import getFirebase from "./firebase/getData"
+import setFirebase from "./firebase/setData"
 
 import App from './App.vue'
 
@@ -25,6 +28,9 @@ new Vue({
   firebase,
   store,
   router,
+  getFirebase,
+  setFirebase,
+  api,
   render: h => h(App),
 }).$mount('#app')
 import '@/assets/scss/style.scss'
