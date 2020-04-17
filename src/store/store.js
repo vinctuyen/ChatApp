@@ -4,7 +4,6 @@ import Vue from "vue";
 import Vuex from "vuex";
 import api from "../api/index"
 Vue.use(Vuex);
-
 /* eslint-disable */
 export default new Vuex.Store({
   state: {
@@ -69,23 +68,39 @@ export default new Vuex.Store({
     },
     // room
     createRoom({ commit }, a) {
-      api.room.addRoom({ commit }, a.idRoom, a.members, a.message)
+      api.room.addRoom(a.idRoom, a.members, a.message)
     },
     getRoom({ commit }) {
       api.room.getRoom({commit})
     },
-    getContacts({commit}, userId) {
-      api.room.getListContact({commit}, userId)
+    getContacts({commit}) {
+      api.room.getListContact({commit})
+    },
+    updateRoom({commit}, room) {
+      commit('getRoom', room)
+    },
+    updateContact({commit}, contacts) {
+      commit('getContacts', contacts)
     },
     
     // conversation
     sendMessage({commit}, request){
-      api.conversation.sendMessage({commit}, request.sender, request.message, request.roomID, request.idMessage)
+      api.conversation.sendMessage(request.sender, request.message, request.roomID, request.idMessage)
     },
     getConversation({commit}, roomId) {
+      console.log('api', api)
       api.conversation.getContentConversation({commit}, roomId)
       commit("setCurrentRoom", roomId)
     },
+    updateConversation ({commit}, conversation) {
+      commit("getConversation", conversation)
+    },
+    getDefaultConversation() {
+      api.conversation.getFirstConversation()
+    },
+    setCurrentRoom({commit}, defaultRoom) {
+      commit("setCurrentRoom", defaultRoom)
+    }
   },
   getters: {
     userId: (state) => state.userId,

@@ -100,10 +100,12 @@
       v-model="active"
     >
       <button
-        v-for="item in contacts"
+        v-for="(item) in contacts"
         :key="item.key"
+        v-bind:class="{ contactActive: item.roomID == currentRoom}"
         class="listContact"
         @click="getChat(item.roomID)"
+        
       >
         <ListChat
           v-bind:name="item.contactName"
@@ -198,23 +200,25 @@ export default {
       getContacts: "getContacts",
       getConversation: "getConversation",
       sendMessage: "sendMessage",
+      getDefaultConversation: "getDefaultConversation"
     }),
     InitRoom() {
       this.createRoom({
-        idRoom: this.room.length + 1,
+        idRoom: this.room.length,
         nameRoom: this.searchUser.uid,
         members: [this.userId, this.searchUser.uid],
         message: this.firstChat,
       });
     },
-    sendMessageRequest() {
+     sendMessageRequest() {
       // eslint-disable-next-line no-console
-      this.sendMessage({
+       this.sendMessage({
         sender: this.userId,
         message: this.textarea,
         roomID: this.currentRoom,
         idMessage: this.conversation.messages.length,
       });
+      this.textarea = ''
     },
     getChat(roomId) {
       // eslint-disable-next-line no-console
@@ -232,6 +236,7 @@ export default {
   beforeMount() {
     this.getListRoom();
     this.getContacts(this.userId);
+    this.getDefaultConversation();
   },
   mounted: function() {
     if (document.getElementById("chat")) {
@@ -242,6 +247,12 @@ export default {
 </script>
 
 <style lang="stylus" scoped="">
+.contactActive {
+  button {
+  background: #EEFBFF;
+}  
+  
+}
 .listContact {
   min-height: 67px;
   display: flex;
@@ -250,6 +261,9 @@ export default {
   max-width: 260px;
   align-items: center;
   background: #fff;
+  button:hover {
+  background: #EEFBFF;
+} 
 }
 .addFriend {
   display: flex;

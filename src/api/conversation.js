@@ -1,68 +1,35 @@
+import setData from "../firebase/setData";
+import getData from "../firebase/getData"
+import store from "../store/store";
 // eslint-disable-next-line no-undef
-var firebaseData = firebase.database().ref();
+// var firebaseData = firebase.database().ref();
 // eslint-disable-next-line no-undef
-var firebaseDatabase = firebase.database();
-import moment from "moment";
 
-var timeNow =
-  moment().hour() +
-  ":" +
-  moment().minute() +
-  ":" +
-  moment().second() +
-  " " +
-  moment().date() +
-  "-" +
-  moment().month() +
-  "-" +
-  moment().year();
-
-var listRoom = {};
-
-firebaseData.child("room").on(
-  "value",
-  function(snapshot) {
-    listRoom = snapshot.val();
-
-    //need set state in store
-  },
-  function(errorObject) {
-    // eslint-disable-next-line no-console
-    console.log(errorObject.code);
-  }
-);
-
-function conversation(roomID) {
-  return listRoom[roomID];
-}
+// firebaseData.child("room").on(
+//   "value",
+//   function(snapshot) {
+//     listRoom = snapshot.val();
+//   },
+//   function(errorObject) {
+//     // eslint-disable-next-line no-console
+//     console.log(errorObject.code);
+//   }
+// );
 
 // function export
 /////////////////////////////////////////////////////////////////////
 
 function getContentConversation({ commit }, roomID) {
-  commit("getConversation", conversation(roomID));
+  let listRoom = store.state.room;
+  commit("getConversation", listRoom[roomID]);
 }
 
-function sendMessage({ commit }, sender, message, roomID, idMessage) {
-  firebaseDatabase
-    .ref("room")
-    .child(`${roomID}/messages/${idMessage}`)
-    .set(
-      {
-        from: sender,
-        content: message,
-        time: timeNow,
-      },
-      function(error) {
-        if (error) {
-          // The write failed...
-        } else {
-          // Data saved successfully!
-
-          commit("getConversation", conversation(roomID));
-        }
-      }
-    );
+function sendMessage(sender, message, roomID, idMessage) {
+  setData.sendMessageRequest(sender, message, roomID, idMessage);
 }
 
-export default { getContentConversation, sendMessage };
+function getFirstConversation() {
+    getData.getFirstConversation()
+}
+
+export default { getContentConversation, sendMessage, getFirstConversation };

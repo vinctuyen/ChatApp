@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-
 // eslint-disable-next-line no-undef
 var firebaseAuthen = firebase.auth();
 // eslint-disable-next-line no-undef
