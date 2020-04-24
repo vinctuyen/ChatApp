@@ -18,6 +18,7 @@ export default new Vuex.Store({
     contacts: {},
     conversation: {},
     currentRoom: '',
+    listUser: {}
   },
   mutations: {
     //This is for Sidbar trigger in mobile
@@ -50,6 +51,9 @@ export default new Vuex.Store({
     },
     setCurrentRoom(state, currentRoom) {
       state.currentRoom = currentRoom
+    },
+    getListUser(state, listUser) {
+      state.listUser = listUser
     }
   },
   actions: {
@@ -66,9 +70,18 @@ export default new Vuex.Store({
     search({ commit }, email) {
       api.authen.search({commit},email.email)
     },
+    getListUser({commit}, listUser) {
+      commit("getListUser", listUser)
+    },
+    resetPassword({ commit }, email) {
+      api.authen.resetPassword(email)
+    },
     // room
     createRoom({ commit }, a) {
       api.room.addRoom(a.idRoom, a.members, a.message)
+    }, 
+    createGroup({commit}, group) {
+      api.room.createGroup(group.idRoom, group.members, group.message, group.nameRoom)
     },
     getRoom({ commit }) {
       api.room.getRoom({commit})
@@ -88,9 +101,8 @@ export default new Vuex.Store({
       api.conversation.sendMessage(request.sender, request.message, request.roomID, request.idMessage)
     },
     getConversation({commit}, roomId) {
-      console.log('api', api)
-      api.conversation.getContentConversation({commit}, roomId)
       commit("setCurrentRoom", roomId)
+      api.conversation.getContentConversation({commit}, roomId)
     },
     updateConversation ({commit}, conversation) {
       commit("getConversation", conversation)

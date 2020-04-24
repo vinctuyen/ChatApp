@@ -1,6 +1,6 @@
 import setData from "../firebase/setData";
 import getData from "../firebase/getData"
-import store from "../store/store";
+// import store from "../store/store";
 // eslint-disable-next-line no-undef
 // var firebaseData = firebase.database().ref();
 // eslint-disable-next-line no-undef
@@ -19,9 +19,11 @@ import store from "../store/store";
 // function export
 /////////////////////////////////////////////////////////////////////
 
-function getContentConversation({ commit }, roomID) {
-  let listRoom = store.state.room;
-  commit("getConversation", listRoom[roomID]);
+function getContentConversation({commit}, roomID) {
+  // eslint-disable-next-line no-console
+  // let listRoom = store.state.room;
+  // commit("getConversation", listRoom[roomID]);
+  getData.getConversationCurrent({commit}, roomID)
 }
 
 function sendMessage(sender, message, roomID, idMessage) {
