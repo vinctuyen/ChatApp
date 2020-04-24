@@ -50,4 +50,8 @@ function addRoom( idRoom, members, message) {
   }
 }
 
-export default { addRoom, getRoom, getListContact };
+function createGroup(idRoom, members, message, name) {
+  setData.createGroupChat(idRoom, members, message, name)
+}
+
+export default { addRoom, getRoom, getListContact, createGroup };

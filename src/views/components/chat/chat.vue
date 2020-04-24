@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 <template lang="html" style="height: 100%">
   <div class="abc">
     <div>
@@ -21,16 +22,15 @@
           />
         </div>
         <div class="list-icon">
-          <button
-            style="border: none;
-    background: none;"
-          >
-            <vs-icon icon="notifications" size="30px" color="#DD3434"></vs-icon>
+          <button class="btnHeader">
+            <vs-icon
+              icon="group_add"
+              size="38px"
+              color="#DD3434"
+              @click="popupActivo1 = true"
+            ></vs-icon>
           </button>
-          <button
-            style="border: none;
-    background: none;"
-          >
+          <button class="btnHeader">
             <vs-icon
               icon="person_add"
               size="30px"
@@ -38,9 +38,25 @@
               @click="popupActivo2 = true"
             ></vs-icon>
           </button>
-          <vs-avatar
-            src="https://avatars2.githubusercontent.com/u/31676496?s=460&v=4"
-          />
+          <vs-dropdown vs-custom-content vs-trigger-click>
+            <a class="a-icon" href.prevent>
+              <vs-avatar
+                src="https://avatars2.githubusercontent.com/u/31676496?s=460&v=4"
+              />
+            </a>
+            <vs-dropdown-menu>
+              <vs-dropdown-item>
+                <button style="border: none; background: none">
+                  Profile
+                </button>
+              </vs-dropdown-item>
+              <vs-dropdown-item divider>
+                <button @click="LogOut()" style="border: none; background: none">
+                  Logout
+                </button>
+              </vs-dropdown-item>
+            </vs-dropdown-menu>
+          </vs-dropdown>
         </div>
         <vs-popup
           classContent="popup-search-user"
@@ -74,7 +90,7 @@
             </div>
             <div class="addFriend">
               <p>Gửi đến bạn bè lời chào hỏi</p>
-              <vs-input class="inputx" placeholder="" v-model="firstChat"/>
+              <vs-input class="inputx" placeholder="" v-model="firstChat" />
             </div>
             <div style="display: flex;justify-content: center;">
               <vs-button
@@ -89,6 +105,50 @@
             </div>
           </vs-popup>
         </vs-popup>
+
+        <vs-popup title="popup-search-user" :active.sync="popupActivo1">
+          <vs-input
+            class="inputx"
+            placeholder="Nhập tên nhóm"
+            v-model="nameGroup"
+            style="width: 100%; padding-bottom: 20px"
+            label="Tên nhóm"
+          />
+          <vs-input
+            class="inputx"
+            placeholder="Gửi lời chào"
+            v-model="firstMessageGroup"
+            style="width: 100%; padding-bottom: 20px"
+            label="Gửi lời chào nhóm"
+          />
+          <vs-select
+            placeholder="Choose members"
+            multiple
+            class=""
+            label="Members"
+            v-model="users"
+          >
+            <vs-select-item
+              :key="item.value"
+              :value="item.value"
+              :text="item.name"
+              v-for="item in listUser"
+              >{{ item.name }}</vs-select-item
+            >
+          </vs-select>
+
+          <div style="display: flex;justify-content: center;">
+            <vs-button
+              @click="
+                popupActivo1 = false;
+                initGroup();
+              "
+              color="primary"
+              type="filled"
+              >Tạo nhóm</vs-button
+            >
+          </div>
+        </vs-popup>
       </div>
     </div>
     <vs-sidebar
@@ -99,21 +159,26 @@
       spacer
       v-model="active"
     >
-      <button
-        v-for="(item) in contacts"
-        :key="item.key"
-        v-bind:class="{ contactActive: item.roomID == currentRoom}"
-        class="listContact"
-        @click="getChat(item.roomID)"
-        
-      >
-        <ListChat
-          v-bind:name="item.contactName"
-          :firstMessage="item.firstMessage"
-          :time="item.time"
-          :avatar="item.contactAvatar"
-        />
-      </button>
+      <div v-if="!contacts || contacts == []" class="">
+        Hãy thêm bạn để bắt đầu trò chuyện
+      </div>
+      <div v-else>
+        <button
+          v-for="item in contacts"
+          :key="item.key"
+          v-bind:class="{ contactActive: item.roomID == currentRoom }"
+          class="listContact"
+          @click="getChat(item.roomID)"
+        >
+          <ListChat
+            v-bind:name="item.contactName"
+            :firstMessage="item.firstMessage"
+            :time="item.time"
+            :avatar="item.contactAvatar"
+          />
+        </button>
+      </div>
+
       <!-- <div class="footer-sidebar" slot="footer">
         <vs-button icon="reply" color="danger" type="flat">log out</vs-button>
         <vs-button icon="settings" color="primary" type="border"></vs-button>
@@ -121,43 +186,77 @@
     </vs-sidebar>
     <div class="chat-conversation">
       <div style="height: calc(750px);overflow-y: scroll;" id="chat">
-        <div
-          class="chat-box"
-          v-for="(item, index) in conversation.messages"
-          :key="item.key"
-        >
-          <Message
-            v-bind:content="item.content"
-            :messages="conversation.messages"
-            :id="index"
-            v-if="item.from != userId"
-          />
-          <MessageRight
-            style="display: flex"
-            v-bind:content="item.content"
-            :messages="conversation.messages"
-            :id="index"
-            v-if="item.from == userId"
-          />
+        <div v-if="!conversation" class="noConversation">
+          Bạn chưa có cuộc trò chuyện
+        </div>
+        <div v-else>
+          <div
+            class="chat-box"
+            v-for="(item, index) in conversation.messages"
+            :key="item.key"
+          >
+            <Message
+              v-bind:content="item.content"
+              :messages="conversation.messages"
+              :id="index"
+              v-if="item.from != userId && conversation"
+            />
+            <MessageRight
+              style="display: flex"
+              v-bind:content="item.content"
+              :messages="conversation.messages"
+              :id="index"
+              v-if="item.from == userId && conversation"
+            />
+          </div>
         </div>
       </div>
 
-      <div class="input-message">
-        <span style="width: 3%">
-          <vs-icon icon="face" style="padding-left: 20px"></vs-icon>
-        </span>
-        <span style="width: 3%">
-          <vs-icon icon="link" style="padding-left: 10px"></vs-icon>
-        </span>
-        <vs-textarea v-model="textarea" class="input-text" />
-        <vs-button
-          color="primary"
-          type="filled"
-          style="width: 120px; left: 50px;"
-          @click="sendMessageRequest()"
-          >Send</vs-button
+      <vs-row
+        vs-w="12"
+        class="input-message"
+        vs-type="flex"
+        style="width: auto"
+      >
+        <vs-col
+          vs-type="flex"
+          vs-justify="center"
+          vs-align="center"
+          vs-lg="1"
+          vs-sm="1"
+          vs-xs="2"
         >
-      </div>
+          <span>
+            <vs-icon icon="face" style="padding-left: 20px"></vs-icon>
+          </span>
+          <span>
+            <vs-icon icon="link" style="padding-left: 20px"></vs-icon>
+          </span>
+        </vs-col>
+        <vs-col
+          vs-type="flex"
+          vs-justify="center"
+          vs-align="center"
+          vs-lg="9"
+          vs-sm="7"
+          vs-xs="8"
+        >
+          <vs-textarea
+            v-model="textarea"
+            class="input-text"
+            style="width: 100%"
+          />
+        </vs-col>
+        <vs-col vs-type="flex" vs-align="center" vs-lg="2" vs-sm="4" vs-xs="12">
+          <vs-button
+            color="primary"
+            type="filled"
+            style="width: 120px; left: 50px;"
+            @click="sendMessageRequest()"
+            >Send</vs-button
+          >
+        </vs-col>
+      </vs-row>
     </div>
   </div>
 </template>
@@ -176,13 +275,17 @@ export default {
   data: () => ({
     value1: "",
     textarea: "",
+    popupActivo1: false,
     popupActivo2: false,
     popupActivo3: false,
     nameSearch: "",
     emailSearch: "",
     active: false,
     activeItem: 0,
-    firstChat: ''
+    firstChat: "",
+    users: [],
+    nameGroup: "",
+    firstMessageGroup: "",
   }),
   computed: mapState({
     searchUser: (state) => state.searchUser,
@@ -191,6 +294,7 @@ export default {
     contacts: (state) => state.contacts,
     conversation: (state) => state.conversation,
     currentRoom: (state) => state.currentRoom,
+    listUser: (state) => state.listUser,
   }),
   methods: {
     ...mapActions({
@@ -200,7 +304,9 @@ export default {
       getContacts: "getContacts",
       getConversation: "getConversation",
       sendMessage: "sendMessage",
-      getDefaultConversation: "getDefaultConversation"
+      getDefaultConversation: "getDefaultConversation",
+      createGroup: "createGroup",
+      SignOut: "SignOut",
     }),
     InitRoom() {
       this.createRoom({
@@ -210,27 +316,36 @@ export default {
         message: this.firstChat,
       });
     },
-     sendMessageRequest() {
-      // eslint-disable-next-line no-console
-       this.sendMessage({
+    initGroup() {
+      this.createGroup({
+        idRoom: this.room.length,
+        nameRoom: this.nameGroup,
+        members: this.users,
+        message: this.firstMessageGroup,
+      });
+    },
+    sendMessageRequest() {
+      this.sendMessage({
         sender: this.userId,
         message: this.textarea,
         roomID: this.currentRoom,
         idMessage: this.conversation.messages.length,
       });
-      this.textarea = ''
+      this.textarea = "";
     },
     getChat(roomId) {
-      // eslint-disable-next-line no-console
       this.getConversation(roomId);
     },
     getListRoom() {
       this.getRoom();
     },
     Search() {
-      // eslint-disable-next-line no-console
       this.search({ email: this.emailSearch });
+    },
+    LogOut() {
       // eslint-disable-next-line no-console
+      console.log("aaaaa");
+      this.SignOut({ router: this.$router });
     },
   },
   beforeMount() {
@@ -247,11 +362,25 @@ export default {
 </script>
 
 <style lang="stylus" scoped="">
+.btnHeader {
+  border: none
+  background: none
+  :hover {
+    background #CFD5DF
+  }
+}
+.noConversation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+}
 .contactActive {
   button {
   background: #EEFBFF;
-}  
-  
+}
+
 }
 .listContact {
   min-height: 67px;
@@ -263,7 +392,7 @@ export default {
   background: #fff;
   button:hover {
   background: #EEFBFF;
-} 
+}
 }
 .addFriend {
   display: flex;
@@ -395,7 +524,6 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 22px;
-  width: 15%;
 
 }
 .logo {

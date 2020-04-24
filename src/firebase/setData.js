@@ -43,6 +43,36 @@ function createRoomChat(idRoom, members, message) {
     firebaseDatabase.ref(`account/${members[1]}/rooms`).push(idRoom);
 }
 
+function createGroupChat(idRoom, members, message, name) {
+  let user = {}
+  members.push(store.state.userId)
+  for(let i=0; i<members.length; i++) {
+     user[i] = members[i]
+     firebaseDatabase.ref(`account/${members[i]}/rooms`).push(idRoom);
+  }
+  firebaseDatabase.ref("room/" + (idRoom)).set(
+      {
+        name: name,
+        user: user,
+        type: 'group',
+        messages: {
+          0: {
+            content: message,
+            from: members[0],
+            time: timeNow,
+          },
+        },
+      },
+      function(error) {
+        if (error) {
+          console.log(error);
+        } else {
+            console.log('aaaaaaa')
+        }
+      }
+  )
+}
+
 function sendMessageRequest(sender, message, roomID, idMessage) {
     console.log('store', store.state.currentRoom)
     firebaseDatabase
@@ -77,4 +107,4 @@ function sendMessageRequest(sender, message, roomID, idMessage) {
       }
     );
 }
-export default {createRoomChat, sendMessageRequest}
+export default {createRoomChat, sendMessageRequest, createGroupChat}

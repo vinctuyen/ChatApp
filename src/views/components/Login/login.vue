@@ -16,7 +16,7 @@
           <div>
             <vs-input
               icon="email"
-              type="text"
+              type="email"
               label="Email"
               name="email"
               v-model="email"
@@ -40,7 +40,12 @@
               <vs-checkbox>Rememmber me</vs-checkbox>
             </div>
             <div class="forget">
-              <a>Forget Password</a>
+              <button
+                style="background: none; border: none"
+                @click="popupActivo1 = true"
+              >
+                Forgot Password
+              </button>
             </div>
           </div>
           <div class="btn">
@@ -62,6 +67,29 @@
         </div>
       </div>
     </div>
+    <vs-popup title="Reset password" :active.sync="popupActivo1">
+      <vs-input
+        class="inputx"
+        placeholder="Nhập email"
+        v-model="emailReset"
+        icon="email"
+        type="email"
+        style="width: 100%; padding-bottom: 20px"
+        label="Email"
+      />
+
+      <div style="display: flex;justify-content: center;">
+        <vs-button
+          @click="
+            popupActivo1 = false;
+            resetPass();
+          "
+          color="primary"
+          type="filled"
+          >Reset password</vs-button
+        >
+      </div>
+    </vs-popup>
   </div>
 </template>
 <script>
@@ -79,13 +107,15 @@ export default {
     return {
       email: "",
       password: "",
+      popupActivo1: false,
+      emailReset: "",
     };
   },
   computed: {
     ...mapGetters(["userId"]),
   },
   methods: {
-    ...mapActions({ UpdateUser: "UpdateUser", RegisterUser: "RegisterUser" }),
+    ...mapActions({ UpdateUser: "UpdateUser", RegisterUser: "RegisterUser", resetPassword: 'resetPassword' }),
     Login() {
       if (!this.email) {
         alert("Vui lòng nhập email");
@@ -116,6 +146,10 @@ export default {
         }
       }
     },
+    resetPass() {
+      console.log(this.emailReset)
+      this.resetPassword(this.emailReset)
+    },
   },
   // created() {
   //   this.$store.dispatch('updateUser');
@@ -128,7 +162,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('~@/assets/images/background/vuexy-login-bg.jpg')
+  background-image: url("~@/assets/images/background/vuexy-login-bg.jpg");
 }
 .login-page {
   display: flex;

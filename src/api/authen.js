@@ -36,7 +36,6 @@ function createAccount(email) {
         email: email,
         name: firebaseAuthen.currentUser.displayName,
         anh: firebaseAuthen.currentUser.photoURL,
-        rooms: { 0: 1 },
       },
       function(error) {
         if (error) {
@@ -51,7 +50,7 @@ function createAccount(email) {
 function updateProfile(email) {
   firebaseAuthen.currentUser
     .updateProfile({
-      displayName: "Jane Q. User",
+      displayName: "User",
       photoURL: "https://example.com/jane-q-user/profile.jpg",
     })
     .then(function() {
@@ -104,6 +103,8 @@ function signOut({ commit }, router) {
     .signOut()
     .then(function() {
       commit("auth", null);
+      commit("getContacts", {})
+      commit("getConversation", {})
       router.push({ name: "Login" });
     })
     .catch(function(error) {
@@ -129,4 +130,12 @@ function search({ commit }, e) {
   );
 }
 
-export default { signIn, registerUser, signOut, search };
+function resetPassword(email) {
+  firebaseAuthen.sendPasswordResetEmail(email).then(function() {
+    alert('reset thành công, vui lòng vào hòm thư để tiếp tục')
+  }).catch(function(error) {
+    alert(error)
+  });
+}
+
+export default { signIn, registerUser, signOut, search, resetPassword };
