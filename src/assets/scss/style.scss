@@ -3,3 +3,7 @@
 @import "variable";
 @import "./bootstrap/bootstrap";
 @import "./layout/layout";
+
+#app {
+    height: 100% !important
+}
