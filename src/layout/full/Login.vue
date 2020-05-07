@@ -7,7 +7,6 @@
 <script>
 import Login from "@/views/components/Login/login.vue";
 import messages from '@/views/components/chat/messages.js';
-
 export default {
   name: "ChatScreen",
   components: {
