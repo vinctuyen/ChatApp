@@ -6,7 +6,6 @@
 
 <script>
 import Chat from "@/views/components/chat/chat.vue";
-
 export default {
   name: "ChatScreen",
   components: {
