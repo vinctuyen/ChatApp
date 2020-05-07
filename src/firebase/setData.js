@@ -1,10 +1,7 @@
-/* eslint-disable no-console */
+/* eslint-disable no-undef */
 import moment from "moment";
 import store from "../store/store"
-// eslint-disable-next-line no-undef
 var firebaseDatabase = firebase.database();
-
-// var firebaseData = firebase.database().ref();
 var timeNow =
   moment().hour() +
   ":" +
@@ -35,7 +32,7 @@ function createRoomChat(idRoom, members, message) {
           if (error) {
             console.log(error);
           } else {
-              console.log('aaaaaaa')
+            console.log('')
           }
         }
     )
@@ -67,14 +64,13 @@ function createGroupChat(idRoom, members, message, name) {
         if (error) {
           console.log(error);
         } else {
-            console.log('aaaaaaa')
+            console.log('')
         }
       }
   )
 }
 
 function sendMessageRequest(sender, message, roomID, idMessage) {
-    console.log('store', store.state.currentRoom)
     firebaseDatabase
     .ref("room")
     .child(`${roomID}/messages/${idMessage}`)

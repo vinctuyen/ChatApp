@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 <template lang="html" style="height: 100%">
   <div class="abc">
     <div>
@@ -343,8 +342,6 @@ export default {
       this.search({ email: this.emailSearch });
     },
     LogOut() {
-      // eslint-disable-next-line no-console
-      console.log("aaaaa");
       this.SignOut({ router: this.$router });
     },
   },

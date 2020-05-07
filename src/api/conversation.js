@@ -1,9 +1,7 @@
 import setData from "../firebase/setData";
 import getData from "../firebase/getData"
 // import store from "../store/store";
-// eslint-disable-next-line no-undef
 // var firebaseData = firebase.database().ref();
-// eslint-disable-next-line no-undef
 
 // firebaseData.child("room").on(
 //   "value",
@@ -11,7 +9,6 @@ import getData from "../firebase/getData"
 //     listRoom = snapshot.val();
 //   },
 //   function(errorObject) {
-//     // eslint-disable-next-line no-console
 //     console.log(errorObject.code);
 //   }
 // );
@@ -20,7 +17,6 @@ import getData from "../firebase/getData"
 /////////////////////////////////////////////////////////////////////
 
 function getContentConversation({commit}, roomID) {
-  // eslint-disable-next-line no-console
   // let listRoom = store.state.room;
   // commit("getConversation", listRoom[roomID]);
   getData.getConversationCurrent({commit}, roomID)

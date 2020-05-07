@@ -1,8 +1,7 @@
-/* eslint-disable no-console */
+/* eslint-disable no-undef */
 import setData from "../firebase/setData"
 import getData from "../firebase/getData"
 
-// eslint-disable-next-line no-undef
 var firebaseData = firebase.database().ref();
 
 var listRoom = {};

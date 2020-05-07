@@ -1,7 +1,5 @@
-/* eslint-disable no-console */
-// eslint-disable-next-line no-undef
+/* eslint-disable no-undef */
 var firebaseAuthen = firebase.auth();
-// eslint-disable-next-line no-undef
 var firebaseData = firebase.database().ref();
 
 var listAccount = {};
@@ -26,7 +24,6 @@ function checkAccount(email) {
 }
 
 function createAccount(email) {
-  // eslint-disable-next-line no-undef
   firebase
     .database()
     .ref("account/" + firebaseAuthen.currentUser.uid)

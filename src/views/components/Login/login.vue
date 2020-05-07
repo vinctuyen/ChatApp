@@ -93,7 +93,6 @@
   </div>
 </template>
 <script>
-/* eslint-disable no-console */
 
 import { mapActions, mapGetters } from "vuex";
 
@@ -147,7 +146,6 @@ export default {
       }
     },
     resetPass() {
-      console.log(this.emailReset)
       this.resetPassword(this.emailReset)
     },
   },

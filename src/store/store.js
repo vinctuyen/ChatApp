@@ -1,10 +1,8 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-console */
+/* eslint-disable no-unused-vars */
 import Vue from "vue";
 import Vuex from "vuex";
 import api from "../api/index"
 Vue.use(Vuex);
-/* eslint-disable */
 export default new Vuex.Store({
   state: {
     isSidebarActive: false,

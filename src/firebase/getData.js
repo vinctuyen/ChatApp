@@ -1,7 +1,5 @@
-/* eslint-disable no-console */
+/* eslint-disable no-undef */
 import store from "../store/store";
-import {get} from 'lodash'
-// eslint-disable-next-line no-undef
 var firebaseData = firebase.database().ref();
 var listRoom = {};
 var listAccount = {};
@@ -35,10 +33,8 @@ firebaseData.child("room").on(
     if (store.state.userId && listRoom) {
       store.dispatch("updateRoom", listRoom);
       store.dispatch("getRoom", listRoom);
-      console.log("covao day khong ta", listRoom);
     }
     if (listRoom && store.state.currentRoom) {
-      console.log(store.state.currentRoom);
       store.dispatch("updateConversation", listRoom[store.state.currentRoom]);
     }
     //need set state in store
@@ -93,13 +89,8 @@ function listContact() {
   if(!roomFollowID) {
     return arrContact
   }
-
-  // eslint-disable-next-line no-debugger
-  debugger
-
   for (let i in roomFollowID) {
     messages = listRoom[roomFollowID[i]].messages;
-    console.log(get(listRoom, listRoom[roomFollowID[i]].messages))
     lastMessage = messages[messages.length - 1]
     firstMessage = lastMessage.content;
     time = lastMessage.time;
@@ -117,14 +108,6 @@ function listContact() {
       contactName = listAccount[contactId].name;
       contactAvatar = listAccount[contactId].anh;
     }
-    console.log({
-      firstMessage: firstMessage,
-      time: time,
-      contactId: contactId,
-      contactName: contactName,
-      contactAvatar: contactAvatar,
-      roomID: roomID,
-    })
     arrContact.push({
       firstMessage: firstMessage,
       time: time,
